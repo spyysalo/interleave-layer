@@ -56,12 +56,16 @@ if __name__ == '__main__':
     de = np.arange(10).repeat(4).reshape((-1, 4)) * 10
 
     # Inputs are sequences of three words and two dependencies
-    w_in = Input(shape=(10,))
-    d_in = Input(shape=(10,))
+    w_in = Input(shape=(3,))
+    d_in = Input(shape=(2,))
+    # w_emb = Embedding(we.shape[0], we.shape[1], weights=[we],
+    #                   name="L_Embedding_Word", mask_zero=True)(w_in)
+    # d_emb = Embedding(de.shape[0], de.shape[1], weights=[de],
+    #                   name="L_Embedding_DT", mask_zero=True)(d_in)
     w_emb = Embedding(we.shape[0], we.shape[1], weights=[we],
-                      name="L_Embedding_Word", mask_zero=True)(w_in)
+                      name="L_Embedding_Word")(w_in)
     d_emb = Embedding(de.shape[0], de.shape[1], weights=[de],
-                      name="L_Embedding_DT", mask_zero=True)(d_in)
+                      name="L_Embedding_DT")(d_in)
     lstm_words = LSTM(output_dim=5, activation='sigmoid',
                       name="L_LSTM_Word", return_sequences=True)(w_emb)
     lstm_dt = LSTM(output_dim=5, activation='sigmoid',
@@ -70,17 +74,7 @@ if __name__ == '__main__':
     model = Model(input=[w_in, d_in], output=out)
     model.compile('adam', 'mse')
     
-    """
-    words = np.array([[1,2,3], [4,5,6]])
-    deps = np.array([[1,2], [4,5]])
+    sentence1_words = np.asanyarray([[1,2,3]])
+    sentece_1_depts = np.asanyarray([[1,2]])
 
-    print('words:\n', words)
-    print('deps:\n', deps)
-    print('embedded words:\n', we[words])
-    print('embedded deps:\n', de[deps])
-    print('interleaved:\n', model.predict([words, deps]))
-    """
-    #This is how it should actually work :
-    sentence1_words = np.asanyarray ([[0,0,0,0,0,1,2,3,4,5]]) # shape --> (1,10)
-    sentece_1_depts = np.asanyarray ([[0,0,0,0,0,0,1,2,3,4]]) # shape --> (1,10)
     print(model.predict([sentence1_words, sentece_1_depts]))
