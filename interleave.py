@@ -66,15 +66,15 @@ if __name__ == '__main__':
                       name="L_Embedding_Word")(w_in)
     d_emb = Embedding(de.shape[0], de.shape[1], weights=[de],
                       name="L_Embedding_DT")(d_in)
-    lstm_words = LSTM(output_dim=5, activation='sigmoid',
+    lstm_words = LSTM(output_dim=2, activation=None,
                       name="L_LSTM_Word", return_sequences=True)(w_emb)
-    lstm_dt = LSTM(output_dim=5, activation='sigmoid',
+    lstm_dt = LSTM(output_dim=3, activation=None,
                    name="L_LSTM_DT", return_sequences=True)(d_emb)
     out = Interleave(name="OUT")([lstm_words, lstm_dt])
     model = Model(input=[w_in, d_in], output=out)
     model.compile('adam', 'mse')
     
-    sentence1_words = np.asanyarray([[1,2,3]])
-    sentece_1_depts = np.asanyarray([[1,2]])
+    sentence1_words = np.asanyarray([[0,1,2]])
+    sentence_1_deps = np.asanyarray([[1,0]])
 
-    print(model.predict([sentence1_words, sentece_1_depts]))
+    print(model.predict([sentence1_words, sentence_1_deps]))
